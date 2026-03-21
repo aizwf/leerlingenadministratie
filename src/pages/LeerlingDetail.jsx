@@ -37,192 +37,213 @@ function LeerlingDetail({ leerling, role, onBack, onSave }) {
   };
 
   return (
-    <div style={{ padding: 40 }}>
-      <h1>AIZW Leerlingenadministratie</h1>
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+        <button onClick={onBack}>← Terug</button>
+        <h2 className="page-title" style={{ marginBottom: 0 }}>
+          {leerling.naam}
+        </h2>
+      </div>
 
-      <button onClick={onBack}>← Terug</button>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          gap: 16,
+        }}
+      >
+        <div className="card">
+          <div style={{ fontWeight: "bold", marginBottom: 12 }}>Basisgegevens</div>
 
-      <h2 style={{ marginTop: 20 }}>{leerling.naam}</h2>
+          {canSeePersoonsnummer && (
+            <div style={{ marginBottom: 8 }}>
+              <strong>Persoonsnummer:</strong> {leerling.persoonsnummer}
+            </div>
+          )}
 
-      <div style={{ marginTop: 16 }}>
-        {canSeePersoonsnummer && (
-          <div>
-            <strong>Persoonsnummer:</strong> {leerling.persoonsnummer}
+          {canSeeBSN && (
+            <div style={{ marginBottom: 8 }}>
+              <strong>BSN:</strong> {leerling.bsn}
+            </div>
+          )}
+
+          <div style={{ marginBottom: 8 }}>
+            <strong>Dienstverband:</strong> {leerling.dienstverbandnr}
           </div>
-        )}
 
-        {canSeeBSN && (
-          <div>
-            <strong>BSN:</strong> {leerling.bsn}
+          <div style={{ marginBottom: 8 }}>
+            <strong>Afdeling:</strong> {leerling.afdeling}
           </div>
-        )}
 
-        <div>
-          <strong>Dienstverband:</strong> {leerling.dienstverbandnr}
+          {canSeeFunctie && (
+            <div style={{ marginBottom: 8 }}>
+              <strong>Functie:</strong> {leerling.functie}
+            </div>
+          )}
         </div>
 
-        <div>
-          <strong>Afdeling:</strong> {leerling.afdeling}
-        </div>
+        <div className="card">
+          <div style={{ fontWeight: "bold", marginBottom: 12 }}>Procesgegevens</div>
 
-        {canSeeFunctie && (
-          <div>
-            <strong>Functie:</strong> {leerling.functie}
+          <div style={{ marginBottom: 10 }}>
+            <strong>Opleiding:</strong>{" "}
+            {isEditing && canEditStatus ? (
+              <input
+                type="text"
+                name="opleiding"
+                value={editedLeerling.opleiding || ""}
+                onChange={handleChange}
+              />
+            ) : (
+              leerling.opleiding
+            )}
           </div>
-        )}
 
-        <div style={{ marginTop: 12 }}>
-          <strong>Opleiding:</strong>{" "}
-          {isEditing && canEditStatus ? (
-            <input
-              type="text"
-              name="opleiding"
-              value={editedLeerling.opleiding || ""}
-              onChange={handleChange}
-            />
-          ) : (
-            leerling.opleiding
-          )}
-        </div>
+          <div style={{ marginBottom: 10 }}>
+            <strong>Leerweg:</strong>{" "}
+            {isEditing && canEditStatus ? (
+              <select
+                name="leerweg"
+                value={editedLeerling.leerweg || ""}
+                onChange={handleChange}
+              >
+                <option value="BBL">BBL</option>
+                <option value="BOL">BOL</option>
+              </select>
+            ) : (
+              leerling.leerweg
+            )}
+          </div>
 
-        <div>
-          <strong>Leerweg:</strong>{" "}
-          {isEditing && canEditStatus ? (
-            <select
-              name="leerweg"
-              value={editedLeerling.leerweg || ""}
-              onChange={handleChange}
-            >
-              <option value="BBL">BBL</option>
-              <option value="BOL">BOL</option>
-            </select>
-          ) : (
-            leerling.leerweg
-          )}
-        </div>
+          <div style={{ marginBottom: 10 }}>
+            <strong>Niveau:</strong>{" "}
+            {isEditing && canEditStatus ? (
+              <input
+                type="text"
+                name="niveau"
+                value={editedLeerling.niveau || ""}
+                onChange={handleChange}
+              />
+            ) : (
+              leerling.niveau
+            )}
+          </div>
 
-        <div>
-          <strong>Niveau:</strong>{" "}
-          {isEditing && canEditStatus ? (
-            <input
-              type="text"
-              name="niveau"
-              value={editedLeerling.niveau || ""}
-              onChange={handleChange}
-            />
-          ) : (
-            leerling.niveau
-          )}
-        </div>
+          <div style={{ marginBottom: 10 }}>
+            <strong>Startdatum:</strong>{" "}
+            {isEditing && canEditStatus ? (
+              <input
+                type="date"
+                name="startdatum"
+                value={editedLeerling.startdatum || ""}
+                onChange={handleChange}
+              />
+            ) : (
+              leerling.startdatum
+            )}
+          </div>
 
-        <div>
-          <strong>Startdatum:</strong>{" "}
-          {isEditing && canEditStatus ? (
-            <input
-              type="date"
-              name="startdatum"
-              value={editedLeerling.startdatum || ""}
-              onChange={handleChange}
-            />
-          ) : (
-            leerling.startdatum
-          )}
-        </div>
+          <div style={{ marginBottom: 10 }}>
+            <strong>Verwachte diplomadatum:</strong>{" "}
+            {isEditing && canEditStatus ? (
+              <input
+                type="date"
+                name="verwachteDiplomadatum"
+                value={editedLeerling.verwachteDiplomadatum || ""}
+                onChange={handleChange}
+              />
+            ) : (
+              leerling.verwachteDiplomadatum
+            )}
+          </div>
 
-        <div>
-          <strong>Verwachte diplomadatum:</strong>{" "}
-          {isEditing && canEditStatus ? (
-            <input
-              type="date"
-              name="verwachteDiplomadatum"
-              value={editedLeerling.verwachteDiplomadatum || ""}
-              onChange={handleChange}
-            />
-          ) : (
-            leerling.verwachteDiplomadatum
-          )}
-        </div>
+          <div style={{ marginBottom: 10 }}>
+            <strong>SLB:</strong>{" "}
+            {isEditing && canEditStatus ? (
+              <input
+                type="text"
+                name="slb"
+                value={editedLeerling.slb || ""}
+                onChange={handleChange}
+              />
+            ) : (
+              leerling.slb
+            )}
+          </div>
 
-        <div>
-          <strong>SLB:</strong>{" "}
-          {isEditing && canEditStatus ? (
-            <input
-              type="text"
-              name="slb"
-              value={editedLeerling.slb || ""}
-              onChange={handleChange}
-            />
-          ) : (
-            leerling.slb
-          )}
-        </div>
+          <div style={{ marginBottom: 10 }}>
+            <strong>Status:</strong>{" "}
+            {isEditing && canEditStatus ? (
+              <select
+                name="status"
+                value={editedLeerling.status}
+                onChange={handleChange}
+              >
+                <option value="Actief in opleiding">Actief in opleiding</option>
+                <option value="In onboarding">In onboarding</option>
+                <option value="Afgerond">Afgerond</option>
+              </select>
+            ) : (
+              <span
+                className={`badge ${
+                  leerling.status === "Actief in opleiding"
+                    ? "badge-green"
+                    : leerling.status === "In onboarding"
+                    ? "badge-orange"
+                    : "badge-gray"
+                }`}
+              >
+                {leerling.status}
+              </span>
+            )}
+          </div>
 
-        <div style={{ marginTop: 12 }}>
-          <strong>Status:</strong>{" "}
-          {isEditing && canEditStatus ? (
-            <select
-              name="status"
-              value={editedLeerling.status}
-              onChange={handleChange}
-            >
-              <option value="Actief in opleiding">Actief in opleiding</option>
-              <option value="In onboarding">In onboarding</option>
-              <option value="Afgerond">Afgerond</option>
-            </select>
-          ) : (
-            leerling.status
-          )}
+          <div style={{ marginTop: 16 }}>
+            {canEditStatus &&
+              (isEditing ? (
+                <>
+                  <button onClick={handleSave}>Opslaan</button>
+                  <button onClick={handleCancel} style={{ marginLeft: 8 }}>
+                    Annuleren
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => setIsEditing(true)}>Bewerken</button>
+              ))}
+          </div>
         </div>
       </div>
 
-      <div style={{ marginTop: 20 }}>
-        <strong>Documenten:</strong>
+      <div className="card" style={{ marginTop: 16 }}>
+        <div style={{ fontWeight: "bold", marginBottom: 12 }}>Documenten</div>
 
         <div
-          style={{
-            marginTop: 10,
-            marginBottom: 12,
-            padding: 10,
-            borderRadius: 8,
-            backgroundColor: documentenCompleet ? "#1f4d2e" : "#5a3b00",
-            color: "white",
-            fontWeight: "bold",
-          }}
+          className={`badge ${
+            documentenCompleet ? "badge-green" : "badge-orange"
+          }`}
+          style={{ display: "inline-block", marginBottom: 12 }}
         >
           {documentenCompleet
             ? "Alle documenten compleet"
             : `${aantalOntbrekend} document(en) ontbreken`}
         </div>
 
-        <div style={{ marginTop: 10 }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: 8,
+          }}
+        >
           {documentenLijst.map(([key, value]) => (
-            <div key={key}>
-              {key}:{" "}
-              <span
-                style={{
-                  color: value ? "lightgreen" : "orange",
-                  fontWeight: "bold",
-                }}
-              >
+            <div key={key} className="card" style={{ padding: 12 }}>
+              <div style={{ fontWeight: "bold", marginBottom: 6 }}>{key}</div>
+              <span className={`badge ${value ? "badge-green" : "badge-orange"}`}>
                 {value ? "Compleet" : "Ontbreekt"}
               </span>
             </div>
           ))}
         </div>
-      </div>
-
-      <div style={{ marginTop: 20 }}>
-        {canEditStatus &&
-          (isEditing ? (
-            <>
-              <button onClick={handleSave}>Opslaan</button>
-              <button onClick={handleCancel} style={{ marginLeft: 8 }}>
-                Annuleren
-              </button>
-            </>
-          ) : (
-            <button onClick={() => setIsEditing(true)}>Bewerken</button>
-          ))}
       </div>
     </div>
   );

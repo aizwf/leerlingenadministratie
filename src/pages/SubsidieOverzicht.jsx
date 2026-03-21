@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-function SubsidieOverzicht({ leerlingen, urenData, onLogout }) {
+function SubsidieOverzicht({ leerlingen, urenData }) {
   const vandaag = new Date().toISOString().split("T")[0];
   const [vanDatum, setVanDatum] = useState("2025-01-01");
   const [totEnMetDatum, setTotEnMetDatum] = useState(vandaag);
@@ -69,7 +69,7 @@ function SubsidieOverzicht({ leerlingen, urenData, onLogout }) {
       "verlofuren",
     ];
 
-        const rows = gefilterdeLeerlingen.map((leerling) => [
+    const rows = gefilterdeLeerlingen.map((leerling) => [
       leerling.bsn ?? "",
       leerling.voornaam ?? "",
       leerling.achternaam ?? "",
@@ -87,9 +87,7 @@ function SubsidieOverzicht({ leerlingen, urenData, onLogout }) {
     const csvContent = [
       headers.join(","),
       ...rows.map((row) =>
-        row
-          .map((value) => `"${String(value).replace(/"/g, '""')}"`)
-          .join(",")
+        row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")
       ),
     ].join("\n");
 
@@ -110,11 +108,10 @@ function SubsidieOverzicht({ leerlingen, urenData, onLogout }) {
   };
 
   return (
-    <div style={{ padding: 40 }}>
-      <h1>AIZW Leerlingenadministratie</h1>
-      <h2 style={{ marginTop: 20 }}>Subsidieoverzicht</h2>
+    <div className="container">
+      <h2 className="page-title">Subsidieoverzicht</h2>
 
-      <div style={{ marginTop: 20, marginBottom: 24 }}>
+      <div className="card" style={{ marginTop: 20, marginBottom: 24 }}>
         <div
           style={{
             display: "flex",
@@ -124,7 +121,9 @@ function SubsidieOverzicht({ leerlingen, urenData, onLogout }) {
           }}
         >
           <div>
-            <label><strong>Van datum</strong></label>
+            <label>
+              <strong>Van datum</strong>
+            </label>
             <br />
             <input
               type="date"
@@ -134,7 +133,9 @@ function SubsidieOverzicht({ leerlingen, urenData, onLogout }) {
           </div>
 
           <div>
-            <label><strong>T/m datum</strong></label>
+            <label>
+              <strong>T/m datum</strong>
+            </label>
             <br />
             <input
               type="date"
@@ -144,61 +145,53 @@ function SubsidieOverzicht({ leerlingen, urenData, onLogout }) {
           </div>
 
           <button onClick={handleExportCsv}>Exporteer CSV</button>
-          <button onClick={onLogout}>Uitloggen</button>
+
         </div>
       </div>
 
-      <div style={{ marginBottom: 12 }}>
+      <div className="card" style={{ marginBottom: 16 }}>
         <strong>Aantal leerlingen in periode:</strong> {gefilterdeLeerlingen.length}
       </div>
 
       <div style={{ overflowX: "auto" }}>
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            border: "1px solid #444",
-          }}
-        >
+        <table className="table">
           <thead>
             <tr>
-              <th style={thStyle}>BSN</th>
-              <th style={thStyle}>Voornaam</th>
-              <th style={thStyle}>Achternaam</th>
-              <th style={thStyle}>Opleiding</th>
-              <th style={thStyle}>Leerweg</th>
-              <th style={thStyle}>Niveau</th>
-              <th style={thStyle}>Startdatum</th>
-              <th style={thStyle}>Einddatum</th>
-              <th style={thStyle}>Crebonummer</th>
-              <th style={thStyle}>Gewerkte uren</th>
-              <th style={thStyle}>Ziekteverzuimuren</th>
-              <th style={thStyle}>Verlofuren</th>
+              <th>BSN</th>
+              <th>Voornaam</th>
+              <th>Achternaam</th>
+              <th>Opleiding</th>
+              <th>Leerweg</th>
+              <th>Niveau</th>
+              <th>Startdatum</th>
+              <th>Einddatum</th>
+              <th>Crebonummer</th>
+              <th>Gewerkte uren</th>
+              <th>Ziekteverzuimuren</th>
+              <th>Verlofuren</th>
             </tr>
           </thead>
           <tbody>
             {gefilterdeLeerlingen.map((leerling) => (
               <tr key={leerling.id}>
-                <td style={tdStyle}>{leerling.bsn}</td>
-                <td style={tdStyle}>{leerling.voornaam}</td>
-                <td style={tdStyle}>{leerling.achternaam}</td>
-                <td style={tdStyle}>{leerling.opleiding}</td>
-                <td style={tdStyle}>{leerling.leerweg}</td>
-                <td style={tdStyle}>{leerling.niveau}</td>
-                <td style={tdStyle}>{leerling.startdatum}</td>
-                <td style={tdStyle}>{leerling.einddatum || vandaag}</td>
-                <td style={tdStyle}>{leerling.crebonummer}</td>
-<td style={tdStyle}>{leerling.gewerkteUren}</td>
-<td style={tdStyle}>{leerling.ziekteverzuimuren}</td>
-<td style={tdStyle}>{leerling.verlofuren}</td>
+                <td>{leerling.bsn}</td>
+                <td>{leerling.voornaam}</td>
+                <td>{leerling.achternaam}</td>
+                <td>{leerling.opleiding}</td>
+                <td>{leerling.leerweg}</td>
+                <td>{leerling.niveau}</td>
+                <td>{leerling.startdatum}</td>
+                <td>{leerling.einddatum || vandaag}</td>
+                <td>{leerling.crebonummer}</td>
+                <td>{leerling.gewerkteUren}</td>
+                <td>{leerling.ziekteverzuimuren}</td>
+                <td>{leerling.verlofuren}</td>
               </tr>
             ))}
 
             {gefilterdeLeerlingen.length === 0 && (
               <tr>
-                <td style={tdStyle} colSpan={12}>
-                  Geen leerlingen gevonden binnen deze periode.
-                </td>
+                <td colSpan={12}>Geen leerlingen gevonden binnen deze periode.</td>
               </tr>
             )}
           </tbody>
@@ -207,17 +200,5 @@ function SubsidieOverzicht({ leerlingen, urenData, onLogout }) {
     </div>
   );
 }
-
-const thStyle = {
-  border: "1px solid #444",
-  padding: "8px",
-  textAlign: "left",
-  backgroundColor: "#222",
-};
-
-const tdStyle = {
-  border: "1px solid #444",
-  padding: "8px",
-};
 
 export default SubsidieOverzicht;

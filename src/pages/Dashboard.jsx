@@ -1,5 +1,8 @@
 import { useRef } from "react";
-import { heeftSignaleringen, getSignaleringen } from "../components/signaleringHelpers";
+import {
+  heeftSignaleringen,
+  getSignaleringen,
+} from "../components/signaleringHelpers";
 
 function Dashboard({
   leerlingen,
@@ -40,171 +43,116 @@ function Dashboard({
 
   return (
     <div>
-      <h1>AIZW Leerlingenadministratie</h1>
-      <h2 style={{ marginTop: 20 }}>Dashboard</h2>
+      <h2 className="page-title">Dashboard</h2>
 
       {canImport && (
-        <div style={{ marginTop: 16, marginBottom: 20 }}>
-          <button onClick={() => hrFileInputRef.current?.click()}>
-            HR-data importeren (CSV)
-          </button>
+        <div className="card" style={{ marginBottom: 20 }}>
+          <div style={{ fontWeight: "bold", marginBottom: 12 }}>Imports</div>
 
-          <input
-            ref={hrFileInputRef}
-            type="file"
-            accept=".csv"
-            style={{ display: "none" }}
-            onChange={onImportHr}
-          />
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <button onClick={() => hrFileInputRef.current?.click()}>
+              HR-data importeren
+            </button>
 
-          <button
-            onClick={() => documentenFileInputRef.current?.click()}
-            style={{ marginLeft: 8 }}
-          >
-            Documentstatus importeren (CSV)
-          </button>
+            <input
+              ref={hrFileInputRef}
+              type="file"
+              accept=".csv"
+              style={{ display: "none" }}
+              onChange={onImportHr}
+            />
 
-          <input
-            ref={documentenFileInputRef}
-            type="file"
-            accept=".csv"
-            style={{ display: "none" }}
-            onChange={onImportDocumenten}
-          />
+            <button onClick={() => documentenFileInputRef.current?.click()}>
+              Documentstatus importeren
+            </button>
 
-          <button
-            onClick={() => urenFileInputRef.current?.click()}
-            style={{ marginLeft: 8 }}
-          >
-            Uren importeren (CSV)
-          </button>
+            <input
+              ref={documentenFileInputRef}
+              type="file"
+              accept=".csv"
+              style={{ display: "none" }}
+              onChange={onImportDocumenten}
+            />
 
-          <input
-            ref={urenFileInputRef}
-            type="file"
-            accept=".csv"
-            style={{ display: "none" }}
-            onChange={onImportUren}
-          />
+            <button onClick={() => urenFileInputRef.current?.click()}>
+              Uren importeren
+            </button>
+
+            <input
+              ref={urenFileInputRef}
+              type="file"
+              accept=".csv"
+              style={{ display: "none" }}
+              onChange={onImportUren}
+            />
+          </div>
         </div>
       )}
 
       {hrImportFeedback && (
-        <div
-          style={{
-            marginBottom: 20,
-            padding: 12,
-            borderRadius: 8,
-            backgroundColor: hrImportFeedback.success ? "#1f4d2e" : "#5a1f1f",
-            color: "white",
-          }}
-        >
-          <div style={{ fontWeight: "bold" }}>{hrImportFeedback.message}</div>
-
-          {hrImportFeedback.errors?.length > 0 && (
-            <ul style={{ marginTop: 8, paddingLeft: 20 }}>
-              {hrImportFeedback.errors.map((error, index) => (
-                <li key={index}>{error}</li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <FeedbackCard feedback={hrImportFeedback} />
       )}
 
       {importFeedback && (
-        <div
-          style={{
-            marginBottom: 20,
-            padding: 12,
-            borderRadius: 8,
-            backgroundColor: importFeedback.success ? "#1f4d2e" : "#5a1f1f",
-            color: "white",
-          }}
-        >
-          <div style={{ fontWeight: "bold" }}>{importFeedback.message}</div>
-
-          {importFeedback.errors?.length > 0 && (
-            <ul style={{ marginTop: 8, paddingLeft: 20 }}>
-              {importFeedback.errors.map((error, index) => (
-                <li key={index}>{error}</li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <FeedbackCard feedback={importFeedback} />
       )}
 
       {urenImportFeedback && (
-        <div
-          style={{
-            marginBottom: 20,
-            padding: 12,
-            borderRadius: 8,
-            backgroundColor: urenImportFeedback.success ? "#1f4d2e" : "#5a1f1f",
-            color: "white",
-          }}
-        >
-          <div style={{ fontWeight: "bold" }}>{urenImportFeedback.message}</div>
-
-          {urenImportFeedback.errors?.length > 0 && (
-            <ul style={{ marginTop: 8, paddingLeft: 20 }}>
-              {urenImportFeedback.errors.map((error, index) => (
-                <li key={index}>{error}</li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <FeedbackCard feedback={urenImportFeedback} />
       )}
 
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(2, 220px)",
+          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
           gap: 16,
           marginTop: 24,
         }}
       >
-        <div style={{ border: "1px solid #444", borderRadius: 8, padding: 16 }}>
-          <div style={{ fontSize: 14 }}>Totaal leerlingen</div>
-          <div style={{ fontSize: 28, fontWeight: "bold", marginTop: 8 }}>
-            {totaal}
-          </div>
-        </div>
-
-        <div style={{ border: "1px solid #444", borderRadius: 8, padding: 16 }}>
-          <div style={{ fontSize: 14 }}>Leerlingen met signaleringen</div>
-          <div style={{ fontSize: 28, fontWeight: "bold", marginTop: 8 }}>
-            {aantalMetProblemen}
-          </div>
-        </div>
-
-        <div style={{ border: "1px solid #444", borderRadius: 8, padding: 16 }}>
-          <div style={{ fontSize: 14 }}>Actief in opleiding</div>
-          <div style={{ fontSize: 28, fontWeight: "bold", marginTop: 8 }}>
-            {aantalActief}
-          </div>
-        </div>
-
-        <div style={{ border: "1px solid #444", borderRadius: 8, padding: 16 }}>
-          <div style={{ fontSize: 14 }}>In onboarding</div>
-          <div style={{ fontSize: 28, fontWeight: "bold", marginTop: 8 }}>
-            {aantalOnboarding}
-          </div>
-        </div>
-
-        <div style={{ border: "1px solid #444", borderRadius: 8, padding: 16 }}>
-          <div style={{ fontSize: 14 }}>Diplomadatum binnen 90 dagen</div>
-          <div style={{ fontSize: 28, fontWeight: "bold", marginTop: 8 }}>
-            {aantalDiplomaBinnen90Dagen}
-          </div>
-        </div>
-
-        <div style={{ border: "1px solid #444", borderRadius: 8, padding: 16 }}>
-          <div style={{ fontSize: 14 }}>Geen SLB gekoppeld</div>
-          <div style={{ fontSize: 28, fontWeight: "bold", marginTop: 8 }}>
-            {aantalGeenSLB}
-          </div>
-        </div>
+        <DashboardCard label="Totaal leerlingen" value={totaal} />
+        <DashboardCard label="Leerlingen met signaleringen" value={aantalMetProblemen} />
+        <DashboardCard label="Actief in opleiding" value={aantalActief} />
+        <DashboardCard label="In onboarding" value={aantalOnboarding} />
+        <DashboardCard
+          label="Diplomadatum binnen 90 dagen"
+          value={aantalDiplomaBinnen90Dagen}
+        />
+        <DashboardCard label="Geen SLB gekoppeld" value={aantalGeenSLB} />
       </div>
+    </div>
+  );
+}
+
+function DashboardCard({ label, value }) {
+  return (
+    <div className="card">
+      <div style={{ fontSize: 14, opacity: 0.9 }}>{label}</div>
+      <div style={{ fontSize: 36, fontWeight: "bold", marginTop: 10 }}>
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function FeedbackCard({ feedback }) {
+  return (
+    <div
+      className="card"
+      style={{
+        marginBottom: 16,
+        backgroundColor: feedback.success ? "#1f4d2e" : "#5a1f1f",
+        color: "white",
+      }}
+    >
+      <div style={{ fontWeight: "bold" }}>{feedback.message}</div>
+
+      {feedback.errors?.length > 0 && (
+        <ul style={{ marginTop: 8, paddingLeft: 20 }}>
+          {feedback.errors.map((error, index) => (
+            <li key={index}>{error}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

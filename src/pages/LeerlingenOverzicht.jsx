@@ -12,7 +12,7 @@ function LeerlingenOverzicht({ role, onLogout, onSelectLeerling, leerlingen }) {
   const [alleenProblemen, setAlleenProblemen] = useState(false);
 
   return (
-    <div style={{ padding: 40 }}>
+    <div>
       <h1>AIZW Leerlingenadministratie</h1>
       <p>Ingelogd als: {role}</p>
 
@@ -25,7 +25,7 @@ function LeerlingenOverzicht({ role, onLogout, onSelectLeerling, leerlingen }) {
             marginBottom: 12,
           }}
         >
-          <h2 style={{ margin: 0 }}>Leerlingen</h2>
+          <h2 className="page-title">Leerlingen</h2>
 
           <button onClick={() => setAlleenProblemen(!alleenProblemen)}>
             {alleenProblemen ? "Toon alle leerlingen" : "Toon alleen problemen"}
@@ -51,13 +51,8 @@ function LeerlingenOverzicht({ role, onLogout, onSelectLeerling, leerlingen }) {
               <div
                 key={leerling.id}
                 onClick={() => onSelectLeerling(leerling)}
-                style={{
-                  border: "1px solid #444",
-                  padding: 12,
-                  marginBottom: 12,
-                  borderRadius: 8,
-                  cursor: "pointer",
-                }}
+                className="card"
+                style={{ marginBottom: 12, cursor: "pointer" }}
               >
                 <div>
                   <strong>{leerling.naam}</strong>
@@ -70,31 +65,22 @@ function LeerlingenOverzicht({ role, onLogout, onSelectLeerling, leerlingen }) {
 
                 <div style={{ marginTop: 8 }}>
                   <span
-                    style={{
-                      padding: "4px 8px",
-                      borderRadius: 6,
-                      backgroundColor:
-                        leerling.status === "Actief in opleiding"
-                          ? "green"
-                          : leerling.status === "In onboarding"
-                          ? "orange"
-                          : "gray",
-                      color: "white",
-                      fontSize: 12,
-                      marginRight: 8,
-                    }}
+                    className={`badge ${
+                      leerling.status === "Actief in opleiding"
+                        ? "badge-green"
+                        : leerling.status === "In onboarding"
+                        ? "badge-orange"
+                        : "badge-gray"
+                    }`}
+                    style={{ marginRight: 8 }}
                   >
                     {leerling.status}
                   </span>
 
                   <span
-                    style={{
-                      padding: "4px 8px",
-                      borderRadius: 6,
-                      backgroundColor: compleet ? "green" : "orange",
-                      color: "white",
-                      fontSize: 12,
-                    }}
+                    className={`badge ${
+                      compleet ? "badge-green" : "badge-orange"
+                    }`}
                   >
                     {compleet
                       ? "Documenten compleet"

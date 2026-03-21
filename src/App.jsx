@@ -4,6 +4,7 @@ import LeerlingenOverzicht from "./pages/LeerlingenOverzicht";
 import LeerlingDetail from "./pages/LeerlingDetail";
 import Dashboard from "./pages/Dashboard";
 import SubsidieOverzicht from "./pages/SubsidieOverzicht";
+import AppShell from "./components/AppShell";
 import { leerlingen as initialLeerlingen } from "./data/mockData";
 import { parseDocumentenCSV } from "./data/csvImportDocs";
 import { parseHrCSV } from "./data/csvImportHr";
@@ -204,14 +205,31 @@ function App() {
 
   if (role === "Subsidie") {
     return (
-      <SubsidieOverzicht
-        leerlingen={leerlingen}
-        urenData={urenData}
-        onLogout={() => {
-          setRole(null);
-          setSelectedLeerling(null);
-        }}
-      />
+      <AppShell
+        title="AIZW Leerlingenadministratie"
+        role={role}
+        actions={
+          <>
+            <button
+              onClick={() => {
+                setRole(null);
+                setSelectedLeerling(null);
+              }}
+            >
+              Uitloggen
+            </button>
+          </>
+        }
+      >
+        <SubsidieOverzicht
+          leerlingen={leerlingen}
+          urenData={urenData}
+          onLogout={() => {
+            setRole(null);
+            setSelectedLeerling(null);
+          }}
+        />
+      </AppShell>
     );
   }
 
@@ -227,27 +245,28 @@ function App() {
   }
 
   return (
-    <div style={{ padding: 40 }}>
-      <div style={{ marginBottom: 20 }}>
-        {role !== "Finance" && role !== "Subsidie" && (
-          <button onClick={() => setView("dashboard")}>Dashboard</button>
-        )}
+    <AppShell
+      title="AIZW Leerlingenadministratie"
+      role={role}
+      actions={
+        <>
+          {role !== "Finance" && role !== "Subsidie" && (
+            <button onClick={() => setView("dashboard")}>Dashboard</button>
+          )}
 
-        <button onClick={() => setView("overzicht")} style={{ marginLeft: 8 }}>
-          Overzicht
-        </button>
+          <button onClick={() => setView("overzicht")}>Overzicht</button>
 
-        <button
-          onClick={() => {
-            setRole(null);
-            setSelectedLeerling(null);
-          }}
-          style={{ marginLeft: 8 }}
-        >
-          Uitloggen
-        </button>
-      </div>
-
+          <button
+            onClick={() => {
+              setRole(null);
+              setSelectedLeerling(null);
+            }}
+          >
+            Uitloggen
+          </button>
+        </>
+      }
+    >
       {view === "dashboard" && role !== "Finance" && role !== "Subsidie" ? (
         <Dashboard
           leerlingen={leerlingen}
@@ -267,7 +286,7 @@ function App() {
           leerlingen={leerlingen}
         />
       )}
-    </div>
+    </AppShell>
   );
 }
 
