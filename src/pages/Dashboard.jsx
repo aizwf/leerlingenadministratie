@@ -1,5 +1,9 @@
 import { useRef } from "react";
 import { getAantalOntbrekend } from "../components/documentHelpers";
+import {
+  getSignaleringen,
+  heeftSignaleringen,
+} from "../components/signaleringHelpers";
 
 function Dashboard({
   leerlingen,
@@ -15,8 +19,8 @@ function Dashboard({
 
   const totaal = leerlingen.length;
 
-  const aantalMetProblemen = leerlingen.filter(
-    (leerling) => getAantalOntbrekend(leerling) > 0
+  const aantalMetProblemen = leerlingen.filter((leerling) =>
+    heeftSignaleringen(leerling)
   ).length;
 
   const aantalActief = leerlingen.filter(
@@ -25,6 +29,14 @@ function Dashboard({
 
   const aantalOnboarding = leerlingen.filter(
     (leerling) => leerling.status === "In onboarding"
+  ).length;
+
+  const aantalDiplomaBinnen90Dagen = leerlingen.filter((leerling) =>
+    getSignaleringen(leerling).includes("Diplomadatum binnen 90 dagen")
+  ).length;
+
+  const aantalGeenSLB = leerlingen.filter((leerling) =>
+    getSignaleringen(leerling).includes("Geen SLB gekoppeld")
   ).length;
 
   return (
@@ -140,6 +152,19 @@ function Dashboard({
           <div style={{ fontSize: 14 }}>In onboarding</div>
           <div style={{ fontSize: 28, fontWeight: "bold", marginTop: 8 }}>
             {aantalOnboarding}
+          </div>
+        </div>
+                <div style={{ border: "1px solid #444", borderRadius: 8, padding: 16 }}>
+          <div style={{ fontSize: 14 }}>Diplomadatum binnen 90 dagen</div>
+          <div style={{ fontSize: 28, fontWeight: "bold", marginTop: 8 }}>
+            {aantalDiplomaBinnen90Dagen}
+          </div>
+        </div>
+
+        <div style={{ border: "1px solid #444", borderRadius: 8, padding: 16 }}>
+          <div style={{ fontSize: 14 }}>Geen SLB gekoppeld</div>
+          <div style={{ fontSize: 28, fontWeight: "bold", marginTop: 8 }}>
+            {aantalGeenSLB}
           </div>
         </div>
       </div>

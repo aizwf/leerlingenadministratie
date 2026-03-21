@@ -184,7 +184,9 @@ function App() {
   return (
     <div style={{ padding: 40 }}>
       <div style={{ marginBottom: 20 }}>
-        <button onClick={() => setView("dashboard")}>Dashboard</button>
+        {role !== "Finance" && role !== "Subsidie" && (
+  <button onClick={() => setView("dashboard")}>Dashboard</button>
+)}
         <button onClick={() => setView("overzicht")} style={{ marginLeft: 8 }}>
           Overzicht
         </button>
@@ -199,8 +201,8 @@ function App() {
         </button>
       </div>
 
-      {view === "dashboard" ? (
-        <Dashboard
+      {view === "dashboard" && role !== "Finance" && role !== "Subsidie" ? (
+  <Dashboard
           leerlingen={leerlingen}
           role={role}
           onImportDocumenten={handleImportDocumenten}

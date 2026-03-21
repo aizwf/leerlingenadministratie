@@ -54,8 +54,8 @@ export const leerlingen = [
       leerweg: "BBL",
       niveau: "4",
       startdatum: "2025-01-15",
-      verwachteDiplomadatum: "2027-07-01",
-      slb: "Sandra Koster",
+      verwachteDiplomadatum: "2026-04-10",
+      slb: "",
       documenten: {
         overeenkomst: false,
         idbewijs: false,
