@@ -3,17 +3,21 @@ import LoginScreen from "./pages/LoginScreen";
 import LeerlingenOverzicht from "./pages/LeerlingenOverzicht";
 import LeerlingDetail from "./pages/LeerlingDetail";
 import Dashboard from "./pages/Dashboard";
+import SubsidieOverzicht from "./pages/SubsidieOverzicht";
 import { leerlingen as initialLeerlingen } from "./data/mockData";
 import { parseDocumentenCSV } from "./data/csvImportDocs";
 import { parseHrCSV } from "./data/csvImportHr";
+import { parseUrenCSV } from "./data/csvImportUren";
 
 function App() {
   const [role, setRole] = useState(null);
   const [view, setView] = useState("dashboard");
   const [selectedLeerling, setSelectedLeerling] = useState(null);
   const [leerlingen, setLeerlingen] = useState(initialLeerlingen);
+  const [urenData, setUrenData] = useState([]);
   const [importFeedback, setImportFeedback] = useState(null);
   const [hrImportFeedback, setHrImportFeedback] = useState(null);
+  const [urenImportFeedback, setUrenImportFeedback] = useState(null);
 
   const handleSelectLeerling = (leerling) => {
     setSelectedLeerling(leerling);
@@ -159,12 +163,53 @@ function App() {
     event.target.value = "";
   };
 
+  const handleImportUren = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const text = await file.text();
+    const result = parseUrenCSV(text);
+
+    if (!result.success) {
+      setUrenImportFeedback({
+        success: false,
+        message: "Urenimport mislukt",
+        errors: result.errors,
+      });
+      event.target.value = "";
+      return;
+    }
+
+    setUrenData(result.rows);
+
+    setUrenImportFeedback({
+      success: true,
+      message: `Urenimport gelukt: ${result.rows.length} regel(s) geladen`,
+      errors: [],
+    });
+
+    event.target.value = "";
+  };
+
   if (!role) {
     return (
       <LoginScreen
         onLogin={(gekozenRol) => {
           setRole(gekozenRol);
           setView("dashboard");
+        }}
+      />
+    );
+  }
+
+  if (role === "Subsidie") {
+    return (
+      <SubsidieOverzicht
+        leerlingen={leerlingen}
+        urenData={urenData}
+        onLogout={() => {
+          setRole(null);
+          setSelectedLeerling(null);
         }}
       />
     );
@@ -185,11 +230,13 @@ function App() {
     <div style={{ padding: 40 }}>
       <div style={{ marginBottom: 20 }}>
         {role !== "Finance" && role !== "Subsidie" && (
-  <button onClick={() => setView("dashboard")}>Dashboard</button>
-)}
+          <button onClick={() => setView("dashboard")}>Dashboard</button>
+        )}
+
         <button onClick={() => setView("overzicht")} style={{ marginLeft: 8 }}>
           Overzicht
         </button>
+
         <button
           onClick={() => {
             setRole(null);
@@ -202,13 +249,15 @@ function App() {
       </div>
 
       {view === "dashboard" && role !== "Finance" && role !== "Subsidie" ? (
-  <Dashboard
+        <Dashboard
           leerlingen={leerlingen}
           role={role}
           onImportDocumenten={handleImportDocumenten}
           onImportHr={handleImportHr}
+          onImportUren={handleImportUren}
           importFeedback={importFeedback}
           hrImportFeedback={hrImportFeedback}
+          urenImportFeedback={urenImportFeedback}
         />
       ) : (
         <LeerlingenOverzicht

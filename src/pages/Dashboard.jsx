@@ -1,20 +1,19 @@
 import { useRef } from "react";
-import { getAantalOntbrekend } from "../components/documentHelpers";
-import {
-  getSignaleringen,
-  heeftSignaleringen,
-} from "../components/signaleringHelpers";
+import { heeftSignaleringen, getSignaleringen } from "../components/signaleringHelpers";
 
 function Dashboard({
   leerlingen,
   onImportDocumenten,
   onImportHr,
+  onImportUren,
   role,
   importFeedback,
   hrImportFeedback,
+  urenImportFeedback,
 }) {
   const documentenFileInputRef = useRef(null);
   const hrFileInputRef = useRef(null);
+  const urenFileInputRef = useRef(null);
   const canImport = role === "HR";
 
   const totaal = leerlingen.length;
@@ -72,6 +71,21 @@ function Dashboard({
             style={{ display: "none" }}
             onChange={onImportDocumenten}
           />
+
+          <button
+            onClick={() => urenFileInputRef.current?.click()}
+            style={{ marginLeft: 8 }}
+          >
+            Uren importeren (CSV)
+          </button>
+
+          <input
+            ref={urenFileInputRef}
+            type="file"
+            accept=".csv"
+            style={{ display: "none" }}
+            onChange={onImportUren}
+          />
         </div>
       )}
 
@@ -119,6 +133,28 @@ function Dashboard({
         </div>
       )}
 
+      {urenImportFeedback && (
+        <div
+          style={{
+            marginBottom: 20,
+            padding: 12,
+            borderRadius: 8,
+            backgroundColor: urenImportFeedback.success ? "#1f4d2e" : "#5a1f1f",
+            color: "white",
+          }}
+        >
+          <div style={{ fontWeight: "bold" }}>{urenImportFeedback.message}</div>
+
+          {urenImportFeedback.errors?.length > 0 && (
+            <ul style={{ marginTop: 8, paddingLeft: 20 }}>
+              {urenImportFeedback.errors.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
       <div
         style={{
           display: "grid",
@@ -135,7 +171,7 @@ function Dashboard({
         </div>
 
         <div style={{ border: "1px solid #444", borderRadius: 8, padding: 16 }}>
-          <div style={{ fontSize: 14 }}>Leerlingen met problemen</div>
+          <div style={{ fontSize: 14 }}>Leerlingen met signaleringen</div>
           <div style={{ fontSize: 28, fontWeight: "bold", marginTop: 8 }}>
             {aantalMetProblemen}
           </div>
@@ -154,7 +190,8 @@ function Dashboard({
             {aantalOnboarding}
           </div>
         </div>
-                <div style={{ border: "1px solid #444", borderRadius: 8, padding: 16 }}>
+
+        <div style={{ border: "1px solid #444", borderRadius: 8, padding: 16 }}>
           <div style={{ fontSize: 14 }}>Diplomadatum binnen 90 dagen</div>
           <div style={{ fontSize: 28, fontWeight: "bold", marginTop: 8 }}>
             {aantalDiplomaBinnen90Dagen}
