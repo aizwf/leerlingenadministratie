@@ -13,6 +13,8 @@ function Dashboard({
   importFeedback,
   hrImportFeedback,
   urenImportFeedback,
+  setView,
+  setDashboardFilter,
 }) {
   const documentenFileInputRef = useRef(null);
   const hrFileInputRef = useRef(null);
@@ -40,6 +42,11 @@ function Dashboard({
   const aantalGeenSLB = leerlingen.filter((leerling) =>
     getSignaleringen(leerling).includes("Geen SLB gekoppeld")
   ).length;
+    // Zet een dashboardfilter en opent daarna het leerlingenoverzicht
+  const handleCardClick = (filterKey) => {
+    setDashboardFilter(filterKey);
+    setView("overzicht");
+  };
 
   return (
     <div>
@@ -109,23 +116,55 @@ function Dashboard({
           marginTop: 24,
         }}
       >
-        <DashboardCard label="Totaal leerlingen" value={totaal} />
-        <DashboardCard label="Leerlingen met signaleringen" value={aantalMetProblemen} />
-        <DashboardCard label="Actief in opleiding" value={aantalActief} />
-        <DashboardCard label="In onboarding" value={aantalOnboarding} />
         <DashboardCard
-          label="Diplomadatum binnen 90 dagen"
-          value={aantalDiplomaBinnen90Dagen}
-        />
-        <DashboardCard label="Geen SLB gekoppeld" value={aantalGeenSLB} />
+  label="Totaal leerlingen"
+  value={totaal}
+  onClick={() => handleCardClick("totaal")}
+/>
+
+<DashboardCard
+  label="Leerlingen met signaleringen"
+  value={aantalMetProblemen}
+  onClick={() => handleCardClick("problemen")}
+/>
+
+<DashboardCard
+  label="Actief in opleiding"
+  value={aantalActief}
+  onClick={() => handleCardClick("actief")}
+/>
+
+<DashboardCard
+  label="In onboarding"
+  value={aantalOnboarding}
+  onClick={() => handleCardClick("onboarding")}
+/>
+
+<DashboardCard
+  label="Diplomadatum binnen 90 dagen"
+  value={aantalDiplomaBinnen90Dagen}
+  onClick={() => handleCardClick("diploma-90")}
+/>
+
+<DashboardCard
+  label="Geen SLB gekoppeld"
+  value={aantalGeenSLB}
+  onClick={() => handleCardClick("geen-slb")}
+/>
       </div>
     </div>
   );
 }
 
-function DashboardCard({ label, value }) {
+function DashboardCard({ label, value, onClick }) {
   return (
-    <div className="card">
+    <div
+      className="card"
+      onClick={onClick}
+      style={{
+        cursor: onClick ? "pointer" : "default",
+      }}
+    >
       <div style={{ fontSize: 14, opacity: 0.9 }}>{label}</div>
       <div style={{ fontSize: 36, fontWeight: "bold", marginTop: 10 }}>
         {value}

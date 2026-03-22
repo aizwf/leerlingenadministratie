@@ -20,6 +20,8 @@ function App() {
   const [importFeedback, setImportFeedback] = useState(null);
   const [hrImportFeedback, setHrImportFeedback] = useState(null);
   const [urenImportFeedback, setUrenImportFeedback] = useState(null);
+  // Bewaart welk dashboardfilter actief is wanneer je vanuit een kaart doorklikt
+  const [dashboardFilter, setDashboardFilter] = useState(null);
 
   const handleSelectLeerling = (leerling) => {
     setSelectedLeerling(leerling);
@@ -306,6 +308,8 @@ onLogin={(gekozenRol) => {
     importFeedback={importFeedback}
     hrImportFeedback={hrImportFeedback}
     urenImportFeedback={urenImportFeedback}
+    setView={setView}
+    setDashboardFilter={setDashboardFilter}
   />
 ) : view === "finance" ? (
   // Finance-pagina is alleen bedoeld voor HR en Finance.
@@ -317,11 +321,13 @@ onLogin={(gekozenRol) => {
 ) : (
   // Standaard overzichtspagina voor HR en SLB.
   <LeerlingenOverzicht
-    role={role}
-    onLogout={() => setRole(null)}
-    onSelectLeerling={handleSelectLeerling}
-    leerlingen={leerlingen}
-  />
+  role={role}
+  onLogout={() => setRole(null)}
+  onSelectLeerling={handleSelectLeerling}
+  leerlingen={leerlingen}
+  dashboardFilter={dashboardFilter}
+  clearDashboardFilter={() => setDashboardFilter(null)}
+/>
 )}
     </AppShell>
   );

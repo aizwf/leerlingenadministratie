@@ -8,7 +8,14 @@ import {
   heeftSignaleringen,
 } from "../components/signaleringHelpers";
 
-function LeerlingenOverzicht({ role, onLogout, onSelectLeerling, leerlingen }) {
+function LeerlingenOverzicht({
+  role,
+  onLogout,
+  onSelectLeerling,
+  leerlingen,
+  dashboardFilter,
+  clearDashboardFilter,
+}) {
   // -----------------------------
   // FILTER STATES
   // -----------------------------
@@ -78,6 +85,43 @@ function LeerlingenOverzicht({ role, onLogout, onSelectLeerling, leerlingen }) {
   const gefilterdeLeerlingen = useMemo(() => {
     return [...leerlingen]
       .filter((leerling) => {
+                // -----------------------------
+        // DASHBOARDFILTER
+        // -----------------------------
+        // Als de gebruiker vanuit een dashboardkaart komt,
+        // passen we hier eerst dat extra filter toe.
+        if (dashboardFilter === "geen-slb") {
+          const heeftGeenSlb =
+            !leerling.slb || leerling.slb.trim() === "";
+
+          if (!heeftGeenSlb) return false;
+        }
+                // Leerlingen met signaleringen
+        if (dashboardFilter === "problemen") {
+          if (!heeftSignaleringen(leerling)) return false;
+        }
+
+        // Actief in opleiding
+        if (dashboardFilter === "actief") {
+          if (leerling.status !== "Actief in opleiding") return false;
+        }
+
+        // In onboarding
+        if (dashboardFilter === "onboarding") {
+          if (leerling.status !== "In onboarding") return false;
+        }
+
+        // Diplomadatum binnen 90 dagen
+        if (dashboardFilter === "diploma-90") {
+          const signaleringen = getSignaleringen(leerling);
+          if (!signaleringen.includes("Diplomadatum binnen 90 dagen"))
+            return false;
+        }
+
+        // Totaal = geen extra filter (laat alles door)
+        if (dashboardFilter === "totaal") {
+          // niks doen
+        }
         // -----------------------------
         // PROBLEMENFILTER
         // -----------------------------
@@ -177,6 +221,7 @@ function LeerlingenOverzicht({ role, onLogout, onSelectLeerling, leerlingen }) {
     zoekNaam,
     zoekPersoonsnummer,
     vandaag,
+    dashboardFilter,
   ]);
 
   return (
@@ -184,6 +229,22 @@ function LeerlingenOverzicht({ role, onLogout, onSelectLeerling, leerlingen }) {
       {/* Paginaheader */}
       <h2 className="page-title">Leerlingen</h2>
       <p>Ingelogd als: {role}</p>
+            {/* Toon welk dashboardfilter actief is wanneer de gebruiker via een kaart is binnengekomen */}
+      {dashboardFilter && (
+        <div className="card" style={{ marginBottom: 16 }}>
+          <strong>Actief dashboardfilter:</strong>{" "}
+          {dashboardFilter === "geen-slb"
+            ? "Geen SLB gekoppeld"
+            : dashboardFilter}
+
+          <button
+            onClick={clearDashboardFilter}
+            style={{ marginLeft: 12 }}
+          >
+            Wis dashboardfilter
+          </button>
+        </div>
+      )}
 
       {/* 
         FILTERBALK
