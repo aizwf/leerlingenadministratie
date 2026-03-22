@@ -4,6 +4,7 @@ import LeerlingenOverzicht from "./pages/LeerlingenOverzicht";
 import LeerlingDetail from "./pages/LeerlingDetail";
 import Dashboard from "./pages/Dashboard";
 import SubsidieOverzicht from "./pages/SubsidieOverzicht";
+import FinanceOverzicht from "./pages/FinanceOverzicht";
 import AppShell from "./components/AppShell";
 import { leerlingen as initialLeerlingen } from "./data/mockData";
 import { parseDocumentenCSV } from "./data/csvImportDocs";
@@ -195,10 +196,13 @@ function App() {
   if (!role) {
     return (
       <LoginScreen
-        onLogin={(gekozenRol) => {
-          setRole(gekozenRol);
-          setView("dashboard");
-        }}
+onLogin={(gekozenRol) => {
+  setRole(gekozenRol);
+
+  // Finance start direct op de financepagina.
+  // Andere rollen starten op het dashboard.
+  setView(gekozenRol === "Finance" ? "finance" : "dashboard");
+}}
       />
     );
   }
@@ -209,17 +213,32 @@ function App() {
         title="AIZW Leerlingenadministratie"
         role={role}
         actions={
-          <>
-            <button
-              onClick={() => {
-                setRole(null);
-                setSelectedLeerling(null);
-              }}
-            >
-              Uitloggen
-            </button>
-          </>
-        }
+  <>
+    {/* Dashboard is zichtbaar voor HR en SLB, maar niet voor Finance/Subsidie */}
+    {role !== "Finance" && role !== "Subsidie" && (
+      <button onClick={() => setView("dashboard")}>Dashboard</button>
+    )}
+
+    {/* Overzicht blijft zichtbaar voor HR en SLB */}
+    {role !== "Finance" && role !== "Subsidie" && (
+      <button onClick={() => setView("overzicht")}>Overzicht</button>
+    )}
+
+    {/* Finance is zichtbaar voor HR en Finance */}
+    {(role === "HR" || role === "Finance") && (
+      <button onClick={() => setView("finance")}>Finance</button>
+    )}
+
+    <button
+      onClick={() => {
+        setRole(null);
+        setSelectedLeerling(null);
+      }}
+    >
+      Uitloggen
+    </button>
+  </>
+}
       >
         <SubsidieOverzicht
           leerlingen={leerlingen}
@@ -249,43 +268,61 @@ function App() {
       title="AIZW Leerlingenadministratie"
       role={role}
       actions={
-        <>
-          {role !== "Finance" && role !== "Subsidie" && (
-            <button onClick={() => setView("dashboard")}>Dashboard</button>
-          )}
+  <>
+    {/* Dashboard is zichtbaar voor HR en SLB, maar niet voor Finance/Subsidie */}
+    {role !== "Finance" && role !== "Subsidie" && (
+      <button onClick={() => setView("dashboard")}>Dashboard</button>
+    )}
 
-          <button onClick={() => setView("overzicht")}>Overzicht</button>
+    {/* Overzicht blijft zichtbaar voor HR en SLB */}
+    {role !== "Finance" && role !== "Subsidie" && (
+      <button onClick={() => setView("overzicht")}>Overzicht</button>
+    )}
 
-          <button
-            onClick={() => {
-              setRole(null);
-              setSelectedLeerling(null);
-            }}
-          >
-            Uitloggen
-          </button>
-        </>
-      }
+    {/* Finance-pagina is alleen zichtbaar voor HR en Finance */}
+    {(role === "HR" || role === "Finance") && (
+      <button onClick={() => setView("finance")}>Finance</button>
+    )}
+
+    <button
+      onClick={() => {
+        setRole(null);
+        setSelectedLeerling(null);
+      }}
     >
-      {view === "dashboard" && role !== "Finance" && role !== "Subsidie" ? (
-        <Dashboard
-          leerlingen={leerlingen}
-          role={role}
-          onImportDocumenten={handleImportDocumenten}
-          onImportHr={handleImportHr}
-          onImportUren={handleImportUren}
-          importFeedback={importFeedback}
-          hrImportFeedback={hrImportFeedback}
-          urenImportFeedback={urenImportFeedback}
-        />
-      ) : (
-        <LeerlingenOverzicht
-          role={role}
-          onLogout={() => setRole(null)}
-          onSelectLeerling={handleSelectLeerling}
-          leerlingen={leerlingen}
-        />
-      )}
+      Uitloggen
+    </button>
+  </>
+}
+    >
+      {/* Dashboardweergave voor rollen met dashboardtoegang */}
+{view === "dashboard" && role !== "Finance" && role !== "Subsidie" ? (
+  <Dashboard
+    leerlingen={leerlingen}
+    role={role}
+    onImportDocumenten={handleImportDocumenten}
+    onImportHr={handleImportHr}
+    onImportUren={handleImportUren}
+    importFeedback={importFeedback}
+    hrImportFeedback={hrImportFeedback}
+    urenImportFeedback={urenImportFeedback}
+  />
+) : view === "finance" ? (
+  // Finance-pagina is alleen bedoeld voor HR en Finance.
+  <FinanceOverzicht
+    leerlingen={leerlingen}
+    setLeerlingen={setLeerlingen}
+    rol={role}
+  />
+) : (
+  // Standaard overzichtspagina voor HR en SLB.
+  <LeerlingenOverzicht
+    role={role}
+    onLogout={() => setRole(null)}
+    onSelectLeerling={handleSelectLeerling}
+    leerlingen={leerlingen}
+  />
+)}
     </AppShell>
   );
 }
